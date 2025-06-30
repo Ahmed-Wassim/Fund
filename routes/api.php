@@ -35,7 +35,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/dashboard/activity', [DashboardController::class, 'recentActivity']);
 
     // Business management (for owners)
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth', 'owner'])->group(function () {
         Route::post('/businesses', [BusinessController::class, 'store']);
         Route::put('/businesses/{business}', [BusinessController::class, 'update']);
         Route::delete('/businesses/{business}', [BusinessController::class, 'destroy']);
@@ -49,7 +49,7 @@ Route::middleware('auth:api')->group(function () {
     });
 
     // Investor routes
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth', 'investor'])->group(function () {
         // Making offers
         Route::post('/offers', [OfferController::class, 'store']);
         Route::get('/my-offers', [OfferController::class, 'myOffers']);
