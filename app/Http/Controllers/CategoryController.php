@@ -1,9 +1,7 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -13,14 +11,10 @@ class CategoryController extends Controller
         return response()->json($categories);
     }
 
-    public function show(Category $category)
+    public function show($id)
     {
-        $category->load([
-            'businesses' => function ($query) {
-                $query->active()->with(['user', 'category'])->latest();
-            }
-        ]);
-
+        $category = Category::findOrFail($id);
+        $category->load('businesses');
         return response()->json($category);
     }
 }

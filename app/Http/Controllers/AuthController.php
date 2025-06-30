@@ -1,26 +1,27 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
-use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|between:2,100',
-            'email' => 'required|string|email|max:100|unique:users',
-            'password' => 'required|string|min:6',
-            'country' => 'required|string|max:100',
-            'birth_date' => 'required|date|before:today',
-            'user_type' => 'required|in:investor,owner',
-            'title' => 'required_if:user_type,investor|string|max:100',
-            'bio' => 'required_if:user_type,investor|string|max:1000',
+            'name'          => 'required|string|between:2,100',
+            'email'         => 'required|string|email|max:100|unique:users',
+            'password'      => 'required|string|min:6',
+            'phone'         => 'nullable|string',
+            'gender'        => 'nullable|in:male,female',
+            'country'       => 'required|string|max:100',
+            'birth_date'    => 'required|date|before:today',
+            'type'          => 'required|in:investor,owner',
+            'title'         => 'required_if:user_type,investor|string|max:100',
+            'bio'           => 'required_if:user_type,investor|string|max:1000',
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -28,27 +29,27 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        $userData = $request->only(['name', 'email', 'country', 'birth_date', 'user_type', 'title', 'bio']);
+        $userData             = $request->only(['name', 'email', 'country', 'phone', 'gender', 'birth_date', 'type', 'title', 'bio']);
         $userData['password'] = Hash::make($request->password);
 
         if ($request->hasFile('profile_image')) {
             $userData['profile_image'] = $request->file('profile_image')->store('profiles', 'public');
         }
 
-        $user = User::create($userData);
+        $user  = User::create($userData);
         $token = JWTAuth::fromUser($user);
 
         return response()->json([
             'message' => 'User successfully registered',
-            'user' => $user,
-            'token' => $token
+            'user'    => $user,
+            'token'   => $token,
         ], 201);
     }
 
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'email'    => 'required|email',
             'password' => 'required|string|min:6',
         ]);
 
@@ -56,7 +57,7 @@ class AuthController extends Controller
             return response()->json($validator->errors(), 422);
         }
 
-        if (!$token = JWTAuth::attempt($validator->validated())) {
+        if (! $token = JWTAuth::attempt($validator->validated())) {
             return response()->json(['error' => 'Invalid credentials'], 401);
         }
 
@@ -83,9 +84,9 @@ class AuthController extends Controller
     {
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
-            'user' => auth()->user()
+            'token_type'   => 'bearer',
+            'expires_in'   => auth()->factory()->getTTL() * 60,
+            'user'         => auth()->user(),
         ]);
     }
 

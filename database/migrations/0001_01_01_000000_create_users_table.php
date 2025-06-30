@@ -17,9 +17,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('phone');
+            $table->string('phone')->nullable();
             $table->string('country');
-            $table->enum('gender', ['male', 'female']);
+            $table->enum('gender', ['male', 'female'])->nullable();
             $table->date('birth_date');
             $table->enum('type', ['investor', 'owner']);
             $table->string('title')->nullable(); // for investors

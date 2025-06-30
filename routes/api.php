@@ -1,14 +1,13 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\DealController;
-use App\Http\Controllers\OfferController;
 use App\Http\Controllers\BusinessController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DealController;
+use App\Http\Controllers\OfferController;
+use App\Http\Controllers\WishlistController;
+use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::post('/register', [AuthController::class, 'register']);
@@ -18,7 +17,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/businesses', [BusinessController::class, 'index']);
 Route::get('/businesses/{business}', [BusinessController::class, 'show']);
 Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/categories/{category}', [CategoryController::class, 'show']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
 
 // Public deal information
 Route::get('/deals/recent', [DealController::class, 'recent']);
@@ -36,7 +35,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/dashboard/activity', [DashboardController::class, 'recentActivity']);
 
     // Business management (for owners)
-    Route::middleware('user.type:owner')->group(function () {
+    Route::middleware('auth')->group(function () {
         Route::post('/businesses', [BusinessController::class, 'store']);
         Route::put('/businesses/{business}', [BusinessController::class, 'update']);
         Route::delete('/businesses/{business}', [BusinessController::class, 'destroy']);
@@ -50,7 +49,7 @@ Route::middleware('auth:api')->group(function () {
     });
 
     // Investor routes
-    Route::middleware('user.type:investor')->group(function () {
+    Route::middleware('auth')->group(function () {
         // Making offers
         Route::post('/offers', [OfferController::class, 'store']);
         Route::get('/my-offers', [OfferController::class, 'myOffers']);
