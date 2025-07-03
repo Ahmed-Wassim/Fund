@@ -30,6 +30,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::put('/profile', [AuthController::class, 'updateProfile']);
+    Route::post('/password', [AuthController::class, 'updatePassword']);
 
     // Dashboard
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
