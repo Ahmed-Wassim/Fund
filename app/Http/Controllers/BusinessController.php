@@ -61,6 +61,7 @@ class BusinessController extends Controller
             'target_market'          => 'nullable|string',
             'competitive_advantages' => 'nullable|string',
             'financial_highlights'   => 'nullable|array',
+            'status'                 => 'required|in:active,pending,closed',
         ]);
 
         if ($validator->fails()) {
@@ -110,6 +111,7 @@ class BusinessController extends Controller
             'target_market'          => 'nullable|string',
             'competitive_advantages' => 'nullable|string',
             'financial_highlights'   => 'nullable|array',
+            'status'                 => 'nullable|in:active,pending,closed',
         ]);
 
         if ($validator->fails()) {
