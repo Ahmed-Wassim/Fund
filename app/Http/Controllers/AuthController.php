@@ -71,15 +71,14 @@ class AuthController extends Controller
 
     public function updateProfile(Request $request)
     {
+        // dd($request->all());
         $validator = Validator::make($request->all(), [
             'name'          => 'required|string|between:2,100',
             'email'         => 'required|string|email|max:100|unique:users',
-            'password'      => 'required|string|min:6',
             'phone'         => 'nullable|string',
             'gender'        => 'nullable|in:male,female',
-            'country'       => 'required|string|max:100',
-            'birth_date'    => 'required|date|before:today',
-            'type'          => 'required|in:investor,owner',
+            'country'       => 'nullable|string|max:100',
+            'birth_date'    => 'nullable|date|before:today',
             'title'         => 'required_if:user_type,investor|string|max:100',
             'bio'           => 'required_if:user_type,investor|string|max:1000',
             'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
