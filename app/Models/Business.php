@@ -1,9 +1,8 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
 class Business extends Model
 {
@@ -25,16 +24,16 @@ class Business extends Model
         'target_market',
         'competitive_advantages',
         'financial_highlights',
-        'is_active'
+        'is_active',
     ];
 
     protected $casts = [
-        'valuation' => 'decimal:2',
-        'money_needed' => 'decimal:2',
-        'percentage_offered' => 'decimal:2',
+        'valuation'            => 'decimal:2',
+        'money_needed'         => 'decimal:2',
+        'percentage_offered'   => 'decimal:2',
         'financial_highlights' => 'array',
-        'is_active' => 'boolean',
-        'founded_year' => 'integer',
+        'is_active'            => 'boolean',
+        'founded_year'         => 'integer',
     ];
 
     // Relationships
@@ -66,7 +65,7 @@ class Business extends Model
     // Scopes
     public function scopeActive($query)
     {
-        return $query->where('is_active', true);
+        return $query->where('status', "active");
     }
 
     public function scopeByCategory($query, $categoryId)
