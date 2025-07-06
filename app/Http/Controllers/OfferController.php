@@ -1,13 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
 
+use App\Models\Business;
 use App\Models\Deal;
 use App\Models\Offer;
-use App\Models\Business;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class OfferController extends Controller
@@ -15,11 +14,11 @@ class OfferController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'business_id' => 'required|exists:businesses,id',
-            'offered_amount' => 'required|numeric|min:0',
+            'business_id'          => 'required|exists:businesses,id',
+            'offered_amount'       => 'required|numeric|min:0',
             'requested_percentage' => 'required|numeric|min:0|max:100',
-            'message' => 'nullable|string|max:1000',
-            'parent_offer_id' => 'nullable|exists:offers,id',
+            'message'              => 'nullable|string|max:1000',
+            'parent_offer_id'      => 'nullable|exists:offers,id',
         ]);
 
         if ($validator->fails()) {
@@ -33,7 +32,7 @@ class OfferController extends Controller
             return response()->json(['error' => 'Cannot make offer on your own business'], 403);
         }
 
-        $offerData = $request->all();
+        $offerData                = $request->all();
         $offerData['investor_id'] = Auth::id();
 
         $offer = Offer::create($offerData);
@@ -41,7 +40,7 @@ class OfferController extends Controller
 
         return response()->json([
             'message' => 'Offer created successfully',
-            'offer' => $offer
+            'offer'   => $offer,
         ], 201);
     }
 
@@ -54,7 +53,7 @@ class OfferController extends Controller
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-        if (!$offer->canBeAccepted()) {
+        if (! $offer->canBeAccepted()) {
             return response()->json(['error' => 'Offer cannot be accepted'], 400);
         }
 
@@ -64,12 +63,12 @@ class OfferController extends Controller
 
             // Create the deal
             Deal::create([
-                'business_id' => $offer->business_id,
-                'investor_id' => $offer->investor_id,
+                'business_id'       => $offer->business_id,
+                'investor_id'       => $offer->investor_id,
                 'accepted_offer_id' => $offer->id,
-                'final_amount' => $offer->offered_amount,
-                'final_percentage' => $offer->requested_percentage,
-                'deal_date' => now(),
+                'final_amount'      => $offer->offered_amount,
+                'final_percentage'  => $offer->requested_percentage,
+                'deal_date'         => now(),
             ]);
 
             // Close all other pending offers for this business
@@ -79,7 +78,7 @@ class OfferController extends Controller
                 ->update(['status' => 'closed']);
 
             // Mark business as inactive
-            $offer->business->update(['is_active' => false]);
+            $offer->business->update(['status' => 'closed']);
         });
 
         return response()->json(['message' => 'Offer accepted successfully']);
@@ -88,9 +87,9 @@ class OfferController extends Controller
     public function counterOffer(Request $request, Offer $offer)
     {
         $validator = Validator::make($request->all(), [
-            'offered_amount' => 'required|numeric|min:0',
+            'offered_amount'       => 'required|numeric|min:0',
             'requested_percentage' => 'required|numeric|min:0|max:100',
-            'message' => 'nullable|string|max:1000',
+            'message'              => 'nullable|string|max:1000',
         ]);
 
         if ($validator->fails()) {
@@ -106,13 +105,13 @@ class OfferController extends Controller
 
         // Create counter offer
         $counterOffer = Offer::create([
-            'business_id' => $offer->business_id,
-            'investor_id' => $offer->investor_id,
-            'offered_amount' => $request->offered_amount,
+            'business_id'          => $offer->business_id,
+            'investor_id'          => $offer->investor_id,
+            'offered_amount'       => $request->offered_amount,
             'requested_percentage' => $request->requested_percentage,
-            'message' => $request->message,
-            'parent_offer_id' => $offer->id,
-            'status' => 'pending',
+            'message'              => $request->message,
+            'parent_offer_id'      => $offer->id,
+            'status'               => 'pending',
         ]);
 
         // Update original offer status
@@ -122,7 +121,7 @@ class OfferController extends Controller
 
         return response()->json([
             'message' => 'Counter offer created successfully',
-            'offer' => $counterOffer
+            'offer'   => $counterOffer,
         ], 201);
     }
 
