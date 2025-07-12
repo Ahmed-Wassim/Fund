@@ -50,7 +50,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return [
             'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
+            'password' => 'hashed',
         ];
     }
 
@@ -106,5 +106,10 @@ class User extends Authenticatable implements JWTSubject
     public function getProfileImageUrlAttribute()
     {
         return $this->profile_image ? asset('storage/' . $this->profile_image) : null;
+    }
+
+    public function zoomMeetings()
+    {
+        return $this->hasMany(ZoomMeeting::class);
     }
 }

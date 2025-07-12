@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
@@ -16,5 +17,13 @@ class CategoryController extends Controller
         $category = Category::findOrFail($id);
         $category->load('businesses');
         return response()->json($category);
+    }
+
+    public function create()
+    {
+        $fields = request()->all();
+        $fields['slug'] = Str::slug($fields['name']);
+        $categorey = Category::create($fields);
+        return response()->json($categorey);
     }
 }

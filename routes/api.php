@@ -15,9 +15,10 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Public business listings
 Route::get('/businesses', [BusinessController::class, 'index']);
-Route::get('/businesses/{business}', [BusinessController::class, 'show']);
+Route::get('/businesses/{id}', [BusinessController::class, 'show']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
+Route::post('/categories', [CategoryController::class, 'create']);
 
 // Public deal information
 Route::get('/deals/recent', [DealController::class, 'recent']);
@@ -29,8 +30,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/profile', [AuthController::class, 'profile']);
-    Route::put('/profile', [AuthController::class, 'updateProfile']);
-    Route::post('/password', [AuthController::class, 'updatePassword']);
 
     // Dashboard
     Route::get('/dashboard/stats', [DashboardController::class, 'stats']);
@@ -67,4 +66,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/offers/{offer}', [OfferController::class, 'show']);
     Route::get('/deals', [DealController::class, 'index']);
     Route::get('/deals/{deal}', [DealController::class, 'show']);
+});
+
+
+Route::middleware('jwt.auth')->group(function () {
+    Route::post('/zoom/meetings', [\App\Http\Controllers\Api\ZoomMeetingController::class, 'store']);
 });

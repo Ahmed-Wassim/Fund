@@ -1,8 +1,10 @@
 <?php
+
 namespace Database\Seeders;
 
 use App\Models\Category;
 use Illuminate\Database\Seeder;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class CategorySeeder extends Seeder
 {
@@ -13,7 +15,6 @@ class CategorySeeder extends Seeder
     {
         $categories = [
             ['name' => 'Technology', 'slug' => 'technology', 'description' => 'Software, hardware, and tech startups'],
-            ['name' => 'Finance', 'slug' => 'finance', 'description' => 'Financial services and startups'],
             ['name' => 'Healthcare', 'slug' => 'healthcare', 'description' => 'Medical devices, healthcare services'],
             ['name' => 'E-commerce', 'slug' => 'ecommerce', 'description' => 'Online retail and marketplace platforms'],
             ['name' => 'Fintech', 'slug' => 'fintech', 'description' => 'Financial technology and services'],

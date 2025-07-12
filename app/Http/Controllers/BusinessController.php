@@ -47,28 +47,27 @@ class BusinessController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'category_id'            => 'required|exists:categories,id',
-            'business_name'          => 'required|string|max:255',
-            'description'            => 'required|string',
-            'business_photo'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'valuation'              => 'required|numeric|min:0',
-            'money_needed'           => 'required|numeric|min:0',
-            'percentage_offered'     => 'required|numeric|min:0|max:100',
-            'location'               => 'required|string|max:255',
-            'employees_count'        => 'required|integer|min:0',
-            'founded_year'           => 'nullable|integer|min:1900|max:' . date('Y'),
-            'business_model'         => 'nullable|string',
-            'target_market'          => 'nullable|string',
+            'category_id' => 'required|exists:categories,id',
+            'business_name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'business_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'valuation' => 'required|numeric|min:0',
+            'money_needed' => 'required|numeric|min:0',
+            'percentage_offered' => 'required|numeric|min:0|max:100',
+            'location' => 'required|string|max:255',
+            'employees_count' => 'required|integer|min:0',
+            'founded_year' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'business_model' => 'nullable|string',
+            'target_market' => 'nullable|string',
             'competitive_advantages' => 'nullable|string',
-            'financial_highlights'   => 'nullable|array',
-            'status'                 => 'required|in:active,pending,closed',
+            'financial_highlights' => 'nullable|array',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        $businessData            = $request->except(['business_photo']);
+        $businessData = $request->except(['business_photo']);
         $businessData['user_id'] = Auth::id();
 
         if ($request->hasFile('business_photo')) {
@@ -79,14 +78,15 @@ class BusinessController extends Controller
         $business->load(['user', 'category']);
 
         return response()->json([
-            'message'  => 'Business created successfully',
+            'message' => 'Business created successfully',
             'business' => $business,
         ], 201);
     }
 
     public function show(Business $business)
     {
-        $business->load(['user', 'category', 'offers.investor']);
+        $business = Business::find(request('id'));
+        // dd($business);
         return response()->json($business);
     }
 
@@ -97,21 +97,20 @@ class BusinessController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'category_id'            => 'sometimes|exists:categories,id',
-            'business_name'          => 'sometimes|string|max:255',
-            'description'            => 'sometimes|string',
-            'business_photo'         => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'valuation'              => 'sometimes|numeric|min:0',
-            'money_needed'           => 'sometimes|numeric|min:0',
-            'percentage_offered'     => 'sometimes|numeric|min:0|max:100',
-            'location'               => 'sometimes|string|max:255',
-            'employees_count'        => 'sometimes|integer|min:0',
-            'founded_year'           => 'nullable|integer|min:1900|max:' . date('Y'),
-            'business_model'         => 'nullable|string',
-            'target_market'          => 'nullable|string',
+            'category_id' => 'sometimes|exists:categories,id',
+            'business_name' => 'sometimes|string|max:255',
+            'description' => 'sometimes|string',
+            'business_photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'valuation' => 'sometimes|numeric|min:0',
+            'money_needed' => 'sometimes|numeric|min:0',
+            'percentage_offered' => 'sometimes|numeric|min:0|max:100',
+            'location' => 'sometimes|string|max:255',
+            'employees_count' => 'sometimes|integer|min:0',
+            'founded_year' => 'nullable|integer|min:1900|max:' . date('Y'),
+            'business_model' => 'nullable|string',
+            'target_market' => 'nullable|string',
             'competitive_advantages' => 'nullable|string',
-            'financial_highlights'   => 'nullable|array',
-            'status'                 => 'nullable|in:active,pending,closed',
+            'financial_highlights' => 'nullable|array',
         ]);
 
         if ($validator->fails()) {
@@ -128,7 +127,7 @@ class BusinessController extends Controller
         $business->load(['user', 'category']);
 
         return response()->json([
-            'message'  => 'Business updated successfully',
+            'message' => 'Business updated successfully',
             'business' => $business,
         ]);
     }
